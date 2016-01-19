@@ -1,0 +1,19 @@
+[alias]
+    ci = commit
+    co = checkout
+    d = diff
+    flake8 = "!git diff HEAD^ | flake8 --diff "
+    lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%»
+    st = status
+[merge]
+    tool = meld
+[pull]
+    ff = only
+[push]
+    default = simple
+[user]
+    name = Philippe Gauthier
+    email = philippe.gauthier@deuxpi.ca
+    signingkey = F9253E2C
+[diff]
+    renameLimit = 1000

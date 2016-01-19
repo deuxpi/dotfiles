@@ -1,0 +1,92 @@
+[alias]
+amend = commit --amend
+co = commit -m
+draft = phase -fd
+show = diff --pager=always --rev .^
+sl = smartlog --template "{shortest(node)}  {author|user}  {bookmarks % '{ifeq(bookmark, current, label(\"yellow\", \" {bookmark}*\"), label(\"green\", \" {bookmark}\"))}'} {ifeq(branch, 'default', '', label(\"bold\", branch))}\n{desc|firstline}\n\n"
+wip = log --graph --rev=wip --template=wip
+cm = commit -m 'merge'
+
+[ui]
+username = Philippe Gauthier <philippe.gauthier@deuxpi.ca>
+verbose = False
+ssh = ssh -C
+editor = vim
+debugger = ipdb
+
+[phases]
+publish = False
+
+[extensions]
+color =
+graphlog =
+hggit =
+histedit =
+mq =
+pager =
+progress =
+purge =
+rebase =
+record =
+shelve =
+#hgext.achievements = /home/phil/git/hg-achievements
+hgext.bookmarks =
+hgext.churn =
+#hgext.crecord = /home/phil/.hgext/crecord
+hgext.gpg =
+hgext.schemes =
+#hgext.smartlog = /home/phil/.hgext/hg-experimental/smartlog.py
+hgext.strip =
+hgk =
+
+[color]
+mode = terminfo
+
+#Custom colours
+color.orange=202
+color.lightyellow=191
+color.darkorange=220
+color.brightyellow=226
+
+#Colours for each label
+log.branch=cyan 
+log.summary=lightyellow
+log.description=lightyellow
+log.bookmark=green
+log.tag=darkorange
+log.graph=blue
+
+changeset.public=orange bold
+changeset.secret=blue bold
+changeset.draft=brightyellow bold
+
+desc.here=bold blue_background
+
+[pager]
+pager = LESS='FSRX' less
+attend = cat, diff, glog, log, incoming, outgoing, lg, show, lga
+
+[schemes]
+bb = ssh://hg@bitbucket.org/
+
+[diff]
+git = True
+showfunc = True
+unified = 5
+
+[flake8]
+strict = 1
+complexity = 12
+
+[hgk]
+path=/usr/share/mercurial/hgk
+
+[revsetalias]
+wip = (parents(not public()) or not public() or . or head()) and (not obsolete() or unstable()^) and not closed()
+smart = (parents(not public()) or not public() or . or (heads(all()) and not closed() and not desc("Added tag"))) and (not obsolete() or unstable()^)
+
+[templates]
+wip = '{label("log.branch", branches)} {label("changeset.{phase}", node|short)} {label("grep.user", author|user)}{label("log.tag", if(tags," {tags}"))} {label("log.bookmark", if(bookmarks," {bookmarks}"))}\n{label(ifcontains(rev, revset('.'), 'desc.here'),desc|firstline)}'
+
+[hostfingerprints]
+bitbucket.org = 46:de:34:e7:9b:18:cd:7f:ae:fd:8b:e3:bc:f4:1a:5e:38:d7:ac:24

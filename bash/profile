@@ -1,0 +1,10 @@
+if [ -d "$HOME/.local.bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
+
+# Load colors first so they can be use in base theme
+. ~/.dotfiles/bash/theme/colors.theme.bash
+. ~/.dotfiles/bash/theme/base.theme.bash
+. ~/.dotfiles/bash/theme/bobby.theme.bash
