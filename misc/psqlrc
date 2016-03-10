@@ -1,0 +1,15 @@
+-- Avoid output when starting psql.
+\set QUIET 1
+
+-- Create useful and nice prompts.
+\set PROMPT1 '%[%033[0;33m%]%n%[%033[39m%]@%[%033[0;35m%]%/%[%033[39m%]# '
+\set PROMPT2 '> '
+
+-- Display query times.
+\timing
+
+-- Enable expanded table format.
+\x auto
+
+-- Select verbose error messages.
+\set VERBOSITY verbose
