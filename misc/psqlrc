@@ -13,3 +13,8 @@
 
 -- Select verbose error messages.
 \set VERBOSITY verbose
+
+\pset null '¤'
+\pset linestyle unicode
+\pset border 2
+\pset format wrapped
