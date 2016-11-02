@@ -5,6 +5,11 @@
     flake8 = "!git diff HEAD^ | flake8 --diff "
     lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%»
     st = status
+    unstage = reset HEAD --
+[commit]
+    gpgsign = true
+[diff]
+    renameLimit = 1000
 [merge]
     tool = meld
 [pull]
@@ -14,6 +19,4 @@
 [user]
     name = Philippe Gauthier
     email = philippe.gauthier@deuxpi.ca
-    signingkey = F9253E2C
-[diff]
-    renameLimit = 1000
+    signingkey = 65A58A77F9253E2C
