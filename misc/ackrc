@@ -1,0 +1,5 @@
+--type-set=log=.log
+--nolog
+
+--type-set=svg=.svg
+--nosvg
