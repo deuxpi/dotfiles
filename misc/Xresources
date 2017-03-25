@@ -1,8 +1,12 @@
-XTerm*renderFont: true
-XTerm*faceName: VeraMono
-XTerm*faceSize: 12
+XTerm*saveLines: 10000
+XTerm*cursorBlink: true
 
-Xft.dpi: 166
+XTerm*renderFont: true
+XTerm*faceName: Source Code Pro for Powerline Regular
+XTerm*faceSize: 12
+XTerm*scaleHeight: 1.2
+
+Xft.dpi: 185
 
 #define S_base03        #002b36
 #define S_base02        #073642
