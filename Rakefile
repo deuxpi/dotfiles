@@ -3,10 +3,14 @@ task default: %i[
   install_config
 ]
 
-task install_packages: %i[
-  install_common_packages
-  install_linux_packages
-]
+def all_packages
+  subtasks = %i(install_common_packages)
+  subtasks << :install_mac_packages if RUBY_PLATFORM =~ /darwin/
+  subtasks << :install_linux_packages if RUBY_PLATFORM =~ /linux/
+  subtasks
+end
+
+task install_packages: all_packages
 
 task :install_common_packages do
   install_packages %w(ack git)
@@ -35,7 +39,7 @@ task :install_linux_packages do
 end
 
 task :install_mac_packages do
-  install_packages %w(bash-completion)
+  install_packages %w(bash bash-completion coreutils diffutils fzf gnupg2 grep python python3 vim)
 end
 
 task :install_config do
@@ -52,9 +56,13 @@ end
 def install_packages(packages)
   packages = Array(packages)
   if `which apt-get` && $?.success?
-    cmd = 'apt-get install --no-install-recommends'
+    cmd = 'sudo apt-get install --no-install-recommends'
+    sh "#{cmd} #{packages.join(' ')}"
   elsif `which brew` && $?.success?
-    cmd = 'brew install'
+    packages.each do |package|
+      if `brew list --versions #{package}` && $?.exitstatus == 1
+        sh "brew install #{package}"
+      end
+    end
   end
-  sh "sudo #{cmd} #{packages.join(' ')}"
 end
