@@ -117,7 +117,7 @@ end
 
 def brew_installed?(package)
   package = package.split.first
-  `brew list --versions #{package}` && $CHILD_STATUS.exitstatus == 1
+  `brew list --versions #{package}` && $CHILD_STATUS.exitstatus == 0
 end
 
 def install_packages(packages)
