@@ -1,50 +1,43 @@
+# frozen_string_literal: true
+require 'English'
+
 task default: :install
 
-task install: %i[
+desc 'Install all packages and configuration files'
+task install: %i(
   install:packages
   install:config
-]
+)
 
 namespace :install do
-  def mac?
-    RUBY_PLATFORM =~ /darwin/
-  end
+  desc 'Install all packages'
+  task packages: %i(linux_packages mac_packages)
 
-  def linux?
-    RUBY_PLATFORM =~ /linux/
-  end
-
-  task :package_manager do
-    Rake::Task['install:homebrew'].invoke if mac?
-    Rake::Task['install:apt'].invoke if linux?
-  end
-
+  desc 'Install Homebrew'
   task :homebrew do
-    if `which brew` && $?.success?
-      sh 'brew update'
-    else
-      sh %Q{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
-    end
+    next unless mac?
+    next sh 'brew update' if homebrew?
+
+    sh %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
   end
 
   task :apt do
-    sh "sudo apt-get update"
-  end
+    next unless debian?
 
-  def all_packages
-    subtasks = %i(common_packages)
-    subtasks << :mac_packages if mac?
-    subtasks << :linux_packages if linux?
-    subtasks
+    sh 'sudo apt-get update'
   end
-
-  task packages: all_packages
 
   task :common_packages do
-    install_packages %w(ack git)
+    install_packages %w(
+      ack
+      bash-completion
+      git
+    )
   end
 
-  task :linux_packages do
+  task linux_packages: %i(apt common_packages) do
+    next unless debian?
+
     install_packages %w(
       build-essential
       diceware
@@ -66,30 +59,69 @@ namespace :install do
     )
   end
 
-  task :mac_packages do
-    packages  = %w(bash bash-completion coreutils diffutils findutils fzf gnupg2 homebrew/dupes/grep moreutils python python3)
+  task mac_packages: %i(homebrew common_packages) do
+    next unless mac?
+
+    packages = %w(
+      bash
+      coreutils
+      diffutils
+      findutils
+      fzf
+      gnupg2
+      homebrew/dupes/grep
+      moreutils
+      python
+      python3
+    )
     packages << 'vim --override-system-vi'
     install_packages packages
   end
 
+  desc 'Install configuration files'
   task :config do
     Dir.glob('misc/**') do |src|
       dest = File.join ENV['HOME'], ".#{File.basename(src)}"
-      ln_s File.expand_path(src), dest unless File.exists?(dest) || File.symlink?(dest)
+      ln_s File.expand_path(src), dest if missing?(dest)
     end
   end
+end
 
-  def install_packages(packages)
-    packages = Array(packages)
-    if `which apt-get` && $?.success?
-      cmd = 'sudo apt-get install --no-install-recommends'
-      sh "#{cmd} #{packages.join(' ')}"
-    elsif `which brew` && $?.success?
-      packages.each do |package|
-        if `brew list --versions #{package.split.first}` && $?.exitstatus == 1
-          sh "brew install #{package}"
-        end
-      end
+private
+
+def mac?
+  RUBY_PLATFORM =~ /darwin/
+end
+
+def linux?
+  RUBY_PLATFORM =~ /linux/
+end
+
+def debian?
+  `which apt-get` && $CHILD_STATUS.success?
+end
+
+def homebrew?
+  `which brew` && $CHILD_STATUS.success?
+end
+
+def missing?(path)
+  !(File.exist?(path) || File.symlink?(path))
+end
+
+def brew_installed?(package)
+  package = package.split.first
+  `brew list --versions #{package}` && $CHILD_STATUS.exitstatus == 1
+end
+
+def install_packages(packages)
+  packages = Array(packages)
+  if debian?
+    cmd = 'sudo apt-get install --no-install-recommends'
+    sh "#{cmd} #{packages.join(' ')}"
+  elsif homebrew?
+    packages.reject { |package| brew_installed? package }.each do |package|
+      sh "brew install #{package}"
     end
   end
 end

@@ -10,6 +10,10 @@
     gpgsign = true
 [diff]
     renameLimit = 1000
+[fetch]
+    prune = true
+[help]
+    autoCorrect = 1
 [merge]
     tool = meld
 [pull]
