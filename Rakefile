@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'English'
 
 task default: :install
@@ -18,7 +19,8 @@ namespace :install do
     next unless mac?
     next sh 'brew update' if homebrew?
 
-    sh %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
+    sh %{ruby -e "$(curl -fsSL
+      https://raw.githubusercontent.com/Homebrew/install/master/install)"}
   end
 
   task :apt do
@@ -31,7 +33,9 @@ namespace :install do
     install_packages %w(
       ack
       bash-completion
+      cmake
       git
+      shellcheck
     )
   end
 
@@ -51,6 +55,8 @@ namespace :install do
       ibus-wayland
       mpv
       powertop
+      python-dev
+      python3-dev
       tlp
       tmux
       vim-gtk3
