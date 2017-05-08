@@ -74,7 +74,7 @@ namespace :install do
       diffutils
       findutils
       fzf
-      gnupg2
+      gnupg
       homebrew/dupes/grep
       moreutils
       python
@@ -117,7 +117,7 @@ end
 
 def brew_installed?(package)
   package = package.split.first
-  `brew list --versions #{package}` && $CHILD_STATUS.exitstatus == 0
+  `brew list --versions #{package}` && $CHILD_STATUS.exitstatus.zero?
 end
 
 def install_packages(packages)
